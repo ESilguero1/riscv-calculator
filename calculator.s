@@ -1,7 +1,10 @@
+.section .data
+welcome_message: .asciz "Welcome to my epic four-function calculator!\n"
+
+.section .text
 .global _start
 _start:
-    li a0, 39450
-
+    call read_num
     call print_num
     call print_new_line
 
