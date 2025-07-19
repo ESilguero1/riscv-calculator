@@ -63,6 +63,35 @@ print_char:
     ecall
     ret
 
+# Prints a null-terminated string to terminal
+# Input: Pointer to string in a0
+# Output: None
+.global print_string
+
+print_string:
+    # Push s0 and ra to stack
+    addi sp, sp, -8
+    sw ra, 0(sp)
+    sw s0, 4(sp)
+
+    # Store pointer so it doesn't get lost in subroutines
+    mv s0, a0
+
+sloop:
+    lb a0, 0(s0)
+    beq a0, zero, sdone
+    call print_char
+    addi s0, s0, 1
+    j sloop
+
+sdone:
+    # Pop s0 and ra from stack
+    lw ra, 0(sp)
+    lw s0, 4(sp)
+    addi sp, sp, 8
+
+    ret
+
 # Prints a number to the terminal
 # Input: Number to print in a0
 # Output: None
