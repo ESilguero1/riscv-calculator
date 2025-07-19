@@ -3,7 +3,9 @@ space: .asciz " "
 digit_buf: .byte 0x00
 new_line: .asciz "\n"
 char_buf: .byte 0x00
+.global input_char_buf
 input_char_buf: .byte 0x00
+.global input_buf
 input_buf: .space 32
 
 .section .text
@@ -64,7 +66,7 @@ print_char:
     ret
 
 # Prints a null-terminated string to terminal
-# Input: Pointer to string in a0
+# Input: Address to string in a0
 # Output: None
 .global print_string
 
@@ -74,7 +76,7 @@ print_string:
     sw ra, 0(sp)
     sw s0, 4(sp)
 
-    # Store pointer so it doesn't get lost in subroutines
+    # Store address so it doesn't get lost in subroutines
     mv s0, a0
 
 sloop:
