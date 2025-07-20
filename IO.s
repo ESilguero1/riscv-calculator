@@ -139,12 +139,13 @@ base:
 read_char:
     li a0, 0
     la a1, input_char_buf
-    li a2, 1
+    li a2, 2    # Read two bytes to account for newline character
     li a7, 63
 
     ecall
 
-    lb a0, input_char_buf
+    la t0, input_char_buf
+    lb a0, 0(t0)
 
     ret
 
