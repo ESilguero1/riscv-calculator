@@ -104,6 +104,23 @@ print_num:
     addi sp, sp, -4
     sw ra, 0(sp)
 
+    # Handle negative numbers
+    bge a0, zero, pos
+    neg a0, a0
+
+    # Push number to stack
+    addi sp, sp, -4
+    sw a0, 0(sp)
+
+    # Print negative sign
+    li a0, '-'
+    call print_char
+
+    # Pop number from stack
+    lw a0, 0(sp)
+    addi sp, sp, 4
+
+pos:
     # Divide number by 10 to get last digit (as remainder)
     li a1, 10
     call divmod
@@ -155,12 +172,13 @@ read_char:
 .global read_num
 
 read_num:
-    # Push ra and s0-s2 to stack
-    addi sp, sp, -16
+    # Push ra and s0-s3 to stack
+    addi sp, sp, -20
     sw ra, 0(sp)
     sw s0, 4(sp)
     sw s1, 8(sp)
     sw s2, 12(sp)
+    sw s3, 16(sp)
 
     # Get input from terminal
     li a0, 0
@@ -172,7 +190,16 @@ read_num:
 
     # Convert string to integer value
     li s1, 0
+    li s3, 0
     la s0, input_buf
+
+    # Check for '-' character to indicate negative number
+    li t0, '-'
+    lb t1, 0(s0)
+    bne t1, t0, loop # proceed to loop if it's positive
+    li s3, 1         # otherwise, set flag in s3 to indicate number should be negative
+    addi s0, s0, 1   # "consume" the dash character to allow for regular processing
+
 loop:
     li t1, '\n'
     lb t2, 0(s0)
@@ -193,11 +220,17 @@ loop:
 rdone:
     mv a0, s1
 
-    # Pop ra and s0-s2 from stack
+    # Negate number if s3 is set
+    beq s3, zero, return
+    neg a0, a0
+
+return:
+    # Pop ra and s0-s3 from stack
     lw ra, 0(sp)
     lw s0, 4(sp)
     lw s1, 8(sp)
     lw s2, 12(sp)
-    addi sp, sp, 16
+    lw s3, 16(sp)
+    addi sp, sp, 20
 
     ret

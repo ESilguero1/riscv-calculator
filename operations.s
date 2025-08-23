@@ -24,7 +24,7 @@ res:
     ret
 
 
-# Divides two 32-bit integers
+# Divides two positive 32-bit integers
 # Input: Dividend in a0, divisor in a1
 # Output: Quotient in a0, remainder in a1
 .global divmod
@@ -34,6 +34,19 @@ divmod:
     li a0, 0    # a0 is now quotient
     li a1, 0    # a1 is now remainder
     li t2, 31
+
+    # If either number is negative, negate it and set a flag to negate things again later
+    li t4, 0 # t4 will be flag for negative dividend
+    li t5, 0 # t5 will be flag for negative divisor
+
+    bge t0, zero, check_divisor
+    neg t0, t0
+    li t4, 1
+
+check_divisor:
+    bge t1, zero, dloop
+    neg t1, t1
+    li t5, 1
 
 dloop:
     blt t2, zero, ddone
@@ -52,5 +65,14 @@ nosub:
     j dloop
 
 ddone:
-    ret
-    
+    # Negate based on flags
+    xor t0, t4, t5 # This will tell if quotient should be negated
+    beq t0, zero, neg_remainder
+    neg a0, a0
+
+neg_remainder:
+    beq t4, zero, complete
+    neg a1, a1
+
+complete:
+        ret
