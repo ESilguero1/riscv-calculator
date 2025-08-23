@@ -6,7 +6,7 @@ This project implements a basic four-function calculator entirely in RISC-V asse
 
 * **Arithmetic Operations:** Supports addition (+), subtraction (-), multiplication (\*), and division (/).
 
-* **Positive Integer Support:** **Currently, the calculator only handles positive integer inputs and produces positive integer results.**
+* **Integer Support:** The calculator now handles both positive and negative integer inputs and outputs.
 
 * **Custom Multiplication:** Implements a binary shift-and-add algorithm for multiplication.
 
@@ -86,8 +86,6 @@ The project is divided into three main assembly files:
 ## Future Enhancements
 
 I plan to expand this project to include:
-
-* **Negative Number Support:** Implement logic to handle arithmetic operations involving negative integers.
 
 * **Robust Edge Case Handling:** Improve error handling for scenarios like division by zero and invalid input.
 
